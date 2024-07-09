@@ -1,3 +1,2 @@
-web: gunicorn --bind 0.0.0.0:8000 lms_project.wsgi:application
+web: gunicorn --bind 0.0.0.0:$PORT LMS.wsgi:application
 release: python manage.py collectstatic --noinput
-
