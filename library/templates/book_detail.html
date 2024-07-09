@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="mt-4 row mx-3">
+    <div class="col-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text">{{ book.description }}.</p>
+                <p class="card-text"><span class="fw-bold">Category:</span> 
+                    {% for category in book.categories.all %}
+                    {{ category.name }}
+                    {% endfor %}
+                </p>
+                <p>Price: ${{ book.borrowing_price }}</p>
+                {% if user.is_authenticated %}
+                   <a href="{% url 'book_borrow' book.id%}"><button class="btn btn-success" type="submit">Borrow Now</button></a> 
+                {% endif %}
+            </div>
+        </div>
+
+        <section class="row  my-4">
+            <div class="col">
+                <h2>Reviews</h2>
+                <p>Total Review: {{ reviews|length }}</p>
+                {% csrf_token %}
+                {% for review in reviews %}
+                <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                    <div class="card-header">{{review.user.first_name}} {{review.user.last_name}}
+                        <small class="text-muted ms-5">{{ review.created_at|date:"g:i a" }}</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"> {{ review.review_text }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    </div>
+    <div class="col-7">
+        <img style="width: 70%; margin-left: 100px;" src="{{ book.image.url }}" alt="{{ book.title }}">
+    </div>
+</section>
+
+{% endblock %}

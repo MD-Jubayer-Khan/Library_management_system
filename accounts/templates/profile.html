@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h5 class="container ms-3 mt-4">Hi! {{request.user.first_name}} {{request.user.last_name}}</h5>
+<div class="container mt-5">
+
+    <h2 class="mb-4">Borrowed Books History</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Borrowing Price</th>
+                <th>Date Borrowed</th>
+                <th>Date Returned</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.book.title }}</td>
+                <td>${{ transaction.price }}</td>
+                <td>{{ transaction.date_borrowed|date:"d M Y H:i" }}</td>
+                <td>
+                    {% if transaction.date_returned %}
+                    <span class="text-success"> {{ transaction.date_returned|date:"d M Y H:i" }}</span>
+                    {% else %}
+                    <span class="text-danger"> Not returned yet </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if transaction.date_returned %}
+                    <span class="text-danger">Returned</span>
+                    {% else %}
+                    <span class="text-success">Borrowed</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not transaction.date_returned %}
+                    <div class="d-flex gap-4">
+                    <form method="post" action="{% url 'return_book' transaction.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Return Book</button>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-secondary">Returned</button>
+                    {% endif %}
+                    <a href="{% url 'book_review' transaction.book.id %}">
+                        <button class="btn btn-info">Review</button>
+                    </a>
+                </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
