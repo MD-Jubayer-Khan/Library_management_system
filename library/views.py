@@ -51,7 +51,7 @@ def return_book(request, transaction_id):
     user_profile.balance += transaction.price
     user_profile.save()
     amount = transaction.price
-    send_email(request.user, amount, "Borrow Book Message", "return_email.html")
+    send_email(request.user, amount, "Returned Book Message", "return_email.html")
     return redirect('profile')
 
 @login_required
